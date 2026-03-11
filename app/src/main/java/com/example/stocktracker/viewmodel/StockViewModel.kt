@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stocktracker.data.model.StockQuote
+import com.example.stocktracker.data.model.CompanyProfile
 import com.example.stocktracker.data.network.StockApi
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,11 @@ sealed interface StockUiState { //Why sealed interface-Because it forces the UI 
     object Error : StockUiState //represent something went wrong,Show error message
     data class Success(val stock: StockQuote) : StockUiState //API call succeeded,It contains:StockQuote object,Display stock values
 }
+sealed interface CompanyUiState {
+    object Loading : CompanyUiState
+    object Error : CompanyUiState
+    data class Success(val company: CompanyProfile) : CompanyUiState
+}
 
 
 //This class acts as the logic controller for the UI
@@ -21,7 +27,8 @@ class StockViewModel : ViewModel() {
 
     var stockUiState: StockUiState by mutableStateOf(StockUiState.Loading)//Whenever this variable changes:The UI immediately updates.
         private set //Only the ViewModel can change UI.
-
+    var companyUiState: CompanyUiState by mutableStateOf(CompanyUiState.Loading)
+        private set
     private val apiKey ="d6jkfvhr01qkvh5qa5hgd6jkfvhr01qkvh5qa5i0"
 
     init { //When HomeScreen appears/ViewModel is created/
@@ -39,6 +46,20 @@ class StockViewModel : ViewModel() {
                 stockUiState = StockUiState.Success(result) //The UI immediately updates.
             } catch (e: Exception) {
                 stockUiState = StockUiState.Error
+            }
+        }
+    }
+    fun fetchCompany(symbol: String) {
+
+        companyUiState = CompanyUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val stockApi = StockApi.getInstance()
+                val result = stockApi.getCompanyProfile(symbol, apiKey)
+                companyUiState = CompanyUiState.Success(result)
+            } catch (e: Exception) {
+                companyUiState = CompanyUiState.Error
             }
         }
     }

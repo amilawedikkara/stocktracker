@@ -42,7 +42,7 @@ fun HomeScreen(navController: NavController) {
                 }
 
                 is StockUiState.Error -> { //If API request fails: show an error message
-                    Text("Error loading stock data")
+                    Text("Network error. Please try again.")
                 }
 
                 is StockUiState.Success -> { //If API request succeeds:uiState contains real stock data
@@ -62,7 +62,11 @@ fun HomeScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Button(
-                            onClick = { stockViewModel.fetchStock(symbolState.value) }
+                            onClick = {
+                                if (symbolState.value.isNotBlank()) {
+                                    stockViewModel.fetchStock(symbolState.value)
+                                }
+                            }
                         ) {
                             Text("Load Stock")
                         }
@@ -84,7 +88,7 @@ fun HomeScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { navController.navigate("info") }//navigate to the "info" route
+                            onClick = { navController.navigate("info/${symbolState.value}") }//navigate to the "info" route
                         ) {
                             Text("Go to Info")
                         }

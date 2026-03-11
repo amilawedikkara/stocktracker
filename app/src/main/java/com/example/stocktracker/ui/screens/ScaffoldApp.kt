@@ -17,8 +17,11 @@ fun ScaffoldApp() {
             HomeScreen(navController)
         }
 
-        composable("info") {
-            InfoScreen(navController)
+        composable(route = "info/{symbol}") { backStackEntry ->
+
+            val symbol = backStackEntry.arguments?.getString("symbol") ?: "AAPL"
+
+            InfoScreen(navController, symbol)
         }
     }
 }

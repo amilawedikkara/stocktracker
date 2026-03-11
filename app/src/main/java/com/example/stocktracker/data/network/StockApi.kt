@@ -1,6 +1,7 @@
 package com.example.stocktracker.data.network
 
 import com.example.stocktracker.data.model.StockQuote
+import com.example.stocktracker.data.model.CompanyProfile
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -15,6 +16,12 @@ interface StockApi {//defines a Retrofit API interface
         @Query("symbol") symbol: String,
         @Query("token") token: String
     ): StockQuote //The API response should be converted into a StockQuote object
+
+    @GET("stock/profile2")
+    suspend fun getCompanyProfile(
+        @Query("symbol") symbol: String,
+        @Query("token") token: String
+    ): CompanyProfile
 
     companion object {//A companion object acts like a static section of the class.
 
