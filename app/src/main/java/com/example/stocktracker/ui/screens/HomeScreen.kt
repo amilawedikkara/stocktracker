@@ -15,37 +15,37 @@ import com.example.stocktracker.viewmodel.StockViewModel
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    val stockViewModel: StockViewModel = viewModel()
-    val uiState = stockViewModel.stockUiState
+    val stockViewModel: StockViewModel = viewModel() //get stockViewModel instant for this screen
+    val uiState = stockViewModel.stockUiState //reads the current screen state from the ViewModel
     val symbolState = androidx.compose.runtime.remember {
-        androidx.compose.runtime.mutableStateOf("AAPL")
+        androidx.compose.runtime.mutableStateOf("AAPL")//reads the current screen state from the ViewModel
     }
-    Scaffold(
-        topBar = {
+    Scaffold( //gives the screen a standard Material layout structure.
+        topBar = { //screen gets a top bar
             TopAppBar(
                 title = { Text("Stock Tracker") }
             )
         }
-    ) { innerPadding ->
+    ) { innerPadding -> //innerPadding is provided by Scaffold so your content does not overlap with the top bar
 
-        Box(
+        Box( //Box is a layout container
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize()//fill the full screen
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
 
-            when (uiState) {
+            when (uiState) { //UI depending on current state
 
-                is StockUiState.Loading -> {
+                is StockUiState.Loading -> { //If data is still being fetched from the API,show a loading spinner
                     CircularProgressIndicator()
                 }
 
-                is StockUiState.Error -> {
+                is StockUiState.Error -> { //If API request fails: show an error message
                     Text("Error loading stock data")
                 }
 
-                is StockUiState.Success -> {
+                is StockUiState.Success -> { //If API request succeeds:uiState contains real stock data
 
                     val stock = uiState.stock
 
@@ -84,7 +84,7 @@ fun HomeScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { navController.navigate("info") }
+                            onClick = { navController.navigate("info") }//navigate to the "info" route
                         ) {
                             Text("Go to Info")
                         }
